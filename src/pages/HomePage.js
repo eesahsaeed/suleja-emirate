@@ -92,10 +92,6 @@ export default function HomePage() {
           <div className="hero-copy reveal">
             <Badge variant="informative">Official Portal</Badge>
             <Heading level={1}>Suleja Emirate Council</Heading>
-            <Text UNSAFE_className="hero-lead">
-              Official digital gateway for council leadership, cultural heritage, public information, and community
-              services.
-            </Text>
             <Text UNSAFE_className="slide-caption">
               {activeSlide.title}: {activeSlide.caption}
             </Text>
