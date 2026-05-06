@@ -3,11 +3,6 @@
   "name": "Sueja Emirate Council",
   "icons": [
     {
-      "src": "favicon.ico",
-      "type": "image/x-icon",
-      "sizes": "16x16 24x24 32x32 48x48 64x64"
-    },
-    {
       "src": "favicon.png",
       "type": "image/png"
     },
