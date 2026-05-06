@@ -125,10 +125,6 @@ export default function HomePage() {
             gap="size-150"
           >
             <article className="stat-card reveal">
-              <p className="stat-value">38 pages</p>
-              <p className="stat-label">All legacy HTML pages now indexed into React routes</p>
-            </article>
-            <article className="stat-card reveal">
               <p className="stat-value">1804-1807</p>
               <p className="stat-label">Migration period highlighted in the legacy archive</p>
             </article>
