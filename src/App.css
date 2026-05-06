@@ -264,10 +264,8 @@
 }
 
 .slide-caption {
-  border-left: 2px solid rgba(255, 255, 255, 0.68);
   font-size: 0.95rem;
-  margin-bottom: 1.3rem;
-  padding-left: 0.8rem;
+  margin-bottom: 1.6rem;
 }
 
 .hero-cta-button,
