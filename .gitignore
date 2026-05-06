@@ -10,29 +10,7 @@
 
 # production
 /build
-/public/assets/
 /public/legacy-assets/
-
-# media assets (do not commit binaries)
-/public/**/*.jpg
-/public/**/*.jpeg
-/public/**/*.png
-/public/**/*.gif
-/public/**/*.webp
-/public/**/*.avif
-/public/**/*.svg
-/public/**/*.ico
-/public/**/*.mp4
-/public/**/*.mov
-/public/**/*.m4v
-/public/**/*.webm
-/public/**/*.ogg
-/public/**/*.avi
-/public/**/*.wmv
-/public/**/*.flv
-/public/**/*.mkv
-/public/**/*.3gp
-**/Thumbs.db
 
 # misc
 .DS_Store
