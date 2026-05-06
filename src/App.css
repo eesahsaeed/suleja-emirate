@@ -264,8 +264,9 @@
 }
 
 .slide-caption {
+  display: block;
   font-size: 0.95rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 2rem;
 }
 
 .hero-cta-button,
