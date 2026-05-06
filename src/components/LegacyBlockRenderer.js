@@ -1,47 +1,14 @@
 import {Heading, Text} from '@adobe/react-spectrum';
 import {Link} from 'react-router-dom';
-
-const DEMO_VIDEO_SOURCES = [
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-];
+import {
+  buildDemoImageUrl,
+  buildDemoVideoUrl,
+  getImageFallbackProps,
+  isLocalMediaPath
+} from '../lib/mediaFallback';
 
 function isInternalLegacyRoute(href) {
   return href.startsWith('/pages/');
-}
-
-function isLegacyAssetPath(value) {
-  return String(value || '').startsWith('/legacy-assets/');
-}
-
-function hashText(value) {
-  const input = String(value || '');
-  let hash = 0;
-  for (let index = 0; index < input.length; index += 1) {
-    hash = (hash * 31 + input.charCodeAt(index)) | 0;
-  }
-  return Math.abs(hash);
-}
-
-function buildDemoImageUrl(seed) {
-  const normalizedSeed = encodeURIComponent(String(seed || 'suleja-emirate').slice(0, 120));
-  return `https://picsum.photos/seed/${normalizedSeed}/1280/720`;
-}
-
-function buildDemoVideoUrl(seed) {
-  const index = hashText(seed) % DEMO_VIDEO_SOURCES.length;
-  return DEMO_VIDEO_SOURCES[index];
-}
-
-function handleDemoImageFallback(event) {
-  const image = event.currentTarget;
-  if (image.dataset.demoApplied === '1') {
-    return;
-  }
-
-  image.dataset.demoApplied = '1';
-  image.src = buildDemoImageUrl(image.dataset.demoSeed || image.alt || 'suleja-emirate');
 }
 
 function renderLink(href, className, children) {
@@ -109,30 +76,12 @@ function renderBlock(block, index) {
   }
 
   if (block.type === 'image') {
-    const hasLocalSource = isLegacyAssetPath(block.src);
-    const demoImageUrl = buildDemoImageUrl(block.src || `legacy-image-${index}`);
+    const imageFallbackProps = getImageFallbackProps(block.src, block.src || `legacy-image-${index}`);
 
     return (
       <figure key={`image-${index}`} className="legacy-modern-media reveal">
-        <img
-          src={block.src}
-          alt={block.alt || 'Legacy media'}
-          loading="lazy"
-          data-demo-seed={block.src || `legacy-image-${index}`}
-          onError={hasLocalSource ? handleDemoImageFallback : undefined}
-        />
+        <img src={block.src} alt={block.alt || 'Legacy media'} loading="lazy" {...imageFallbackProps} />
         {block.alt ? <figcaption>{block.alt}</figcaption> : null}
-        {hasLocalSource ? (
-          <a
-            href={demoImageUrl}
-            className="legacy-media-demo-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Demo image fallback for deployment previews"
-          >
-            Demo image link
-          </a>
-        ) : null}
       </figure>
     );
   }
@@ -152,10 +101,9 @@ function renderBlock(block, index) {
 
   if (block.type === 'video') {
     const sourceSeed = block.sources.map((source) => source.src).join('|') || `legacy-video-${index}`;
-    const hasLocalSource = block.sources.some((source) => isLegacyAssetPath(source.src));
-    const demoVideoUrl = buildDemoVideoUrl(sourceSeed);
+    const hasLocalSource = block.sources.some((source) => isLocalMediaPath(source.src));
     const videoSources = hasLocalSource
-      ? [...block.sources, {src: demoVideoUrl, type: 'video/mp4'}]
+      ? [...block.sources, {src: buildDemoVideoUrl(sourceSeed), type: 'video/mp4'}]
       : block.sources;
 
     return (
@@ -167,17 +115,6 @@ function renderBlock(block, index) {
           Your browser does not support the video tag.
         </video>
         {block.title ? <figcaption>{block.title}</figcaption> : null}
-        {hasLocalSource ? (
-          <a
-            href={demoVideoUrl}
-            className="legacy-media-demo-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Demo video fallback for deployment previews"
-          >
-            Demo video link
-          </a>
-        ) : null}
       </figure>
     );
   }
@@ -217,8 +154,7 @@ function renderBlock(block, index) {
     return (
       <div key={`gallery-${index}`} className="legacy-modern-gallery">
         {block.items.map((item) => {
-          const hasLocalSource = isLegacyAssetPath(item.src);
-          const demoImageUrl = buildDemoImageUrl(item.src || item.id);
+          const imageFallbackProps = getImageFallbackProps(item.src, item.src || item.id);
           const cardContent = (
             <>
               {item.src ? (
@@ -226,42 +162,25 @@ function renderBlock(block, index) {
                   src={item.src}
                   alt={item.caption || 'Legacy gallery media'}
                   loading="lazy"
-                  data-demo-seed={item.src || item.id}
-                  onError={hasLocalSource ? handleDemoImageFallback : undefined}
+                  {...imageFallbackProps}
                 />
               ) : null}
               {item.caption ? <p>{item.caption}</p> : null}
             </>
           );
 
-          const demoLinkNode = hasLocalSource ? (
-            <a
-              href={demoImageUrl}
-              className="legacy-media-demo-link"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Demo image fallback for deployment previews"
-            >
-              Demo image link
-            </a>
-          ) : null;
-
           if (!item.href || item.href === '#') {
             return (
-              <div key={item.id} className="legacy-gallery-item-wrap">
-                <article className="legacy-gallery-card reveal">{cardContent}</article>
-                {demoLinkNode}
-              </div>
+              <article key={item.id} className="legacy-gallery-card reveal">
+                {cardContent}
+              </article>
             );
           }
 
           return (
-            <div key={item.id} className="legacy-gallery-item-wrap">
-              <span className="legacy-gallery-link-wrap">
-                {renderLink(item.href, 'legacy-gallery-card reveal legacy-gallery-link', cardContent)}
-              </span>
-              {demoLinkNode}
-            </div>
+            <span key={item.id} className="legacy-gallery-link-wrap">
+              {renderLink(item.href, 'legacy-gallery-card reveal legacy-gallery-link', cardContent)}
+            </span>
           );
         })}
       </div>

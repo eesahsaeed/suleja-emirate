@@ -4,6 +4,7 @@ import Camera from '@spectrum-icons/workflow/Camera';
 import Globe from '@spectrum-icons/workflow/Globe';
 import News from '@spectrum-icons/workflow/News';
 import User from '@spectrum-icons/workflow/User';
+import {getImageFallbackProps} from '../lib/mediaFallback';
 
 const topLinks = [
   {label: 'Home', to: '/'},
@@ -87,7 +88,7 @@ export default function LegacySiteHeader({inHero = false}) {
 
       <div className="legacy-mainbar">
         <Link to="/" className="legacy-logo-link" aria-label="Suleja Emirate Council">
-          <img src="/assets/sc1.png" alt="Suleja Emirate emblem" />
+          <img src="/assets/sc1.png" alt="Suleja Emirate emblem" {...getImageFallbackProps('/assets/sc1.png', 'Suleja emblem')} />
         </Link>
 
         <nav className="legacy-main-nav" aria-label="Primary navigation">

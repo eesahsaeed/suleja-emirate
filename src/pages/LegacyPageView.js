@@ -5,6 +5,7 @@ import LegacyBlockRenderer from '../components/LegacyBlockRenderer';
 import legacyPages from '../data/legacyPages';
 import {parseLegacyBlocks} from '../lib/legacyParser';
 import {getLegacyDisplayTitle} from '../lib/legacyPageTitles';
+import {getImageFallbackProps} from '../lib/mediaFallback';
 
 const legacyPageBySlug = new Map(legacyPages.map((page) => [page.slug, page]));
 const sortedLegacyPages = [...legacyPages]
@@ -104,7 +105,7 @@ export default function LegacyPageView() {
         </div>
         {coverImage ? (
           <div className="legacy-page-hero-media">
-            <img src={coverImage} alt={pageTitle} />
+            <img src={coverImage} alt={pageTitle} {...getImageFallbackProps(coverImage, pageTitle)} />
           </div>
         ) : null}
       </section>

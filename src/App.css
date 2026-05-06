@@ -1208,11 +1208,6 @@
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
-.legacy-gallery-item-wrap {
-  display: grid;
-  gap: 0.4rem;
-}
-
 .legacy-gallery-card {
   background: var(--surface-alt);
   border: 1px solid var(--border);
@@ -1243,22 +1238,6 @@
 .legacy-modern-wrapper .legacy-gallery-card p,
 .legacy-modal-content .legacy-gallery-card p {
   display: block;
-}
-
-.legacy-media-demo-link {
-  align-self: flex-start;
-  border: 1px solid rgba(30, 63, 98, 0.2);
-  border-radius: 999px;
-  color: #1f4f7e;
-  display: inline-flex;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.22rem 0.62rem;
-  text-decoration: none;
-}
-
-.legacy-media-demo-link:hover {
-  background: rgba(31, 79, 126, 0.08);
 }
 
 .legacy-link-chip-wrap {

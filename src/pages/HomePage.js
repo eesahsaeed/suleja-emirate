@@ -19,6 +19,7 @@ import {
 } from '@adobe/react-spectrum';
 import {useNavigate} from 'react-router-dom';
 import LegacySiteHeader from '../components/LegacySiteHeader';
+import {buildDemoImageUrl, getImageFallbackProps, isLocalMediaPath} from '../lib/mediaFallback';
 import {
   businessSectors,
   councilLeaders,
@@ -36,6 +37,7 @@ function scrollToSection(id) {
 
 export default function HomePage() {
   const [slideIndex, setSlideIndex] = useState(0);
+  const [resolvedHeroSrc, setResolvedHeroSrc] = useState(heroSlides[0]?.src || '');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,12 +50,39 @@ export default function HomePage() {
 
   const activeSlide = heroSlides[slideIndex];
 
+  useEffect(() => {
+    const nextSource = activeSlide?.src || '';
+
+    if (!isLocalMediaPath(nextSource)) {
+      setResolvedHeroSrc(nextSource);
+      return undefined;
+    }
+
+    let isMounted = true;
+    const probe = new window.Image();
+    probe.onload = () => {
+      if (isMounted) {
+        setResolvedHeroSrc(nextSource);
+      }
+    };
+    probe.onerror = () => {
+      if (isMounted) {
+        setResolvedHeroSrc(buildDemoImageUrl(nextSource));
+      }
+    };
+    probe.src = nextSource;
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeSlide?.src]);
+
   return (
     <>
       <header
         className="hero"
         style={{
-          backgroundImage: `linear-gradient(120deg, rgba(8, 34, 64, 0.86), rgba(22, 68, 112, 0.64)), url(${activeSlide.src})`
+          backgroundImage: `linear-gradient(120deg, rgba(8, 34, 64, 0.86), rgba(22, 68, 112, 0.64)), url(${resolvedHeroSrc})`
         }}
       >
         <div className="hero-grain" />
@@ -112,7 +141,7 @@ export default function HomePage() {
           <div className="gallery-strip">
             {heroSlides.map((slide) => (
               <article key={slide.title} className="gallery-item reveal">
-                <img src={slide.src} alt={slide.title} />
+                <img src={slide.src} alt={slide.title} {...getImageFallbackProps(slide.src, slide.title)} />
                 <p>{slide.title}</p>
               </article>
             ))}
@@ -124,7 +153,11 @@ export default function HomePage() {
         <section className="section-space legacy-highlights-section">
           <div className="legacy-highlights-grid">
             <article className="legacy-highlight-card legacy-highlight-media reveal">
-              <img src="/legacy-assets/img/IMG_9459.jpg" alt="Sight and Sound" />
+              <img
+                src="/legacy-assets/img/IMG_9459.jpg"
+                alt="Sight and Sound"
+                {...getImageFallbackProps('/legacy-assets/img/IMG_9459.jpg', 'Sight and Sound')}
+              />
               <div className="legacy-highlight-content">
                 <h3>Sight &amp; Sound</h3>
                 <p>Curated media highlights, heritage moments, and visual records from the emirate archive.</p>
@@ -132,7 +165,11 @@ export default function HomePage() {
             </article>
 
             <article className="legacy-highlight-card legacy-highlight-media reveal">
-              <img src="/legacy-assets/img/IMG_9488.jpg" alt="Events and Festivities" />
+              <img
+                src="/legacy-assets/img/IMG_9488.jpg"
+                alt="Events and Festivities"
+                {...getImageFallbackProps('/legacy-assets/img/IMG_9488.jpg', 'Events and Festivities')}
+              />
               <div className="legacy-highlight-content">
                 <h3>Events and Festivities</h3>
                 <p>Community celebrations and civic ceremonies documented across the old and modern platform.</p>
@@ -182,6 +219,7 @@ export default function HomePage() {
                   alt="Friday Khuthbah"
                   width="200"
                   height="300"
+                  {...getImageFallbackProps('/legacy-assets/img/13.jpg', 'Friday Khuthbah')}
                 />
                 <div className="legacy-highlight-content">
                   <h3>Friday Khuthbah</h3>
@@ -250,7 +288,11 @@ export default function HomePage() {
               <Item key="governance-tab">
                 <div id="governance" className="panel-grid two-column">
                   <article className="profile-card reveal">
-                    <img src="/assets/mai zazzau1.jpg" alt="HRH Emir of Zazzau Suleja" />
+                    <img
+                      src="/assets/mai zazzau1.jpg"
+                      alt="HRH Emir of Zazzau Suleja"
+                      {...getImageFallbackProps('/assets/mai zazzau1.jpg', 'HRH Emir of Zazzau Suleja')}
+                    />
                     <div>
                       <h3>HRH Malam Muhammad Awwal Ibrahim</h3>
                       <p>Emir of Zazzau Suleja and Chairman.</p>
@@ -258,7 +300,11 @@ export default function HomePage() {
                     </div>
                   </article>
                   <article className="profile-card reveal">
-                    <img src="/assets/naibi.jpg" alt="Acting Secretary" />
+                    <img
+                      src="/assets/naibi.jpg"
+                      alt="Acting Secretary"
+                      {...getImageFallbackProps('/assets/naibi.jpg', 'Acting Secretary')}
+                    />
                     <div>
                       <h3>Alhaji N. Saidu</h3>
                       <p>Acting Secretary.</p>
@@ -304,7 +350,7 @@ export default function HomePage() {
                       Landmark media from the old platform has been retained and showcased in a rotating hero and
                       gallery strip to support tourism and cultural education.
                     </p>
-                    <img src="/assets/zuma-rock.JPG" alt="Zuma Rock" />
+                    <img src="/assets/zuma-rock.JPG" alt="Zuma Rock" {...getImageFallbackProps('/assets/zuma-rock.JPG', 'Zuma Rock')} />
                   </article>
                 </div>
               </Item>
@@ -315,15 +361,15 @@ export default function HomePage() {
                     <Heading level={3}>Council Contact Information</Heading>
                     <p className="contact-line">Suleja Emirate Council, Abuja Road, Niger State</p>
                     <p className="contact-line">
-                      <img src="/assets/d2.jpg" alt="phone icon" />
+                      <img src="/assets/d2.jpg" alt="phone icon" {...getImageFallbackProps('/assets/d2.jpg', 'phone icon 1')} />
                       +234 909 995 5501
                     </p>
                     <p className="contact-line">
-                      <img src="/assets/d1.jpg" alt="phone icon" />
+                      <img src="/assets/d1.jpg" alt="phone icon" {...getImageFallbackProps('/assets/d1.jpg', 'phone icon 2')} />
                       +234 909 995 5502
                     </p>
                     <p className="contact-line">
-                      <img src="/assets/d3.jpg" alt="phone icon" />
+                      <img src="/assets/d3.jpg" alt="phone icon" {...getImageFallbackProps('/assets/d3.jpg', 'phone icon 3')} />
                       +234 909 995 5503
                     </p>
                     <p className="contact-line">Email: sulejaemiratecouncil@gmail.com</p>
