@@ -1,11 +1,30 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Sueja Emirate",
+  "name": "Sueja Emirate Council",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "favicon.png",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon-57-precomposed.png",
+      "type": "image/png",
+      "sizes": "57x57"
+    },
+    {
+      "src": "apple-touch-icon-72-precomposed.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "apple-touch-icon-114-precomposed.png",
+      "type": "image/png",
+      "sizes": "114x114"
+    },
+    {
+      "src": "apple-touch-icon-144-precomposed.png",
+      "type": "image/png",
+      "sizes": "144x144"
     },
     {
       "src": "logo192.png",
