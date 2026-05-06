@@ -1,4 +1,4 @@
-﻿export const heroSlides = [
+export const heroSlides = [
   {
     src: '/assets/gurara.JPG',
     title: 'Gurara Waterfall',
